@@ -1,6 +1,6 @@
 # Development
 
-Tool versions are defined in the platform-specific mise files, Swift manifest, Gradle version catalog and wrapper, and [CI workflow](../.github/workflows/verify.yml). AGP uses built-in Kotlin with an explicitly loaded Kotlin Gradle plugin; the Compose compiler uses the same Kotlin version.
+Tool versions are defined in the platform-specific mise files, Swift manifest, Gradle version catalog, and [CI workflow](../.github/workflows/verify.yml). AGP uses built-in Kotlin with an explicitly loaded Kotlin Gradle plugin; the Compose compiler uses the same Kotlin version.
 
 ## SwiftUI
 

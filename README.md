@@ -33,7 +33,7 @@ Requires JDK 25 and Android SDK 37, with minimum Android API 31. Add a composite
 includeBuild("../tailwind-native/jetpackcompose")
 ```
 
-Add `implementation("dev.tailwind:tailwind-jetpackcompose:0.1.0")` to your dependencies. To use a local Maven artifact instead, run `publishToMavenLocal` in `jetpackcompose/` and add `mavenLocal()` to the consumer's repositories.
+Add `implementation("dev.tailwind:tailwind-jetpackcompose:0.1.0")` to your dependencies. To use a local Maven artifact instead, run `mise run publish` in `jetpackcompose/` and add `mavenLocal()` to the consumer's repositories.
 
 ```kotlin
 import dev.tailwind.nativeui.*

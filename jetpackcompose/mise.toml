@@ -1,12 +1,15 @@
-# Gradle is pinned by gradle/wrapper/gradle-wrapper.properties.
 [tools]
+gradle = "9.8.2"
 java = "temurin-25.0.5+8.0.LTS"
 
 [tasks.test]
-run = "./gradlew testDebugUnitTest"
+run = "gradle testDebugUnitTest"
 
 [tasks.build]
-run = "./gradlew assembleRelease"
+run = "gradle assembleRelease"
 
 [tasks.lint]
-run = "./gradlew lintRelease"
+run = "gradle lintRelease"
+
+[tasks.publish]
+run = "gradle publishToMavenLocal"
