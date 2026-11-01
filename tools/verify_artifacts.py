@@ -20,7 +20,7 @@ if platform in ('all', 'android'):
     with ZipFile(sources) as archive:
         assert archive.read(notice) == license_text, 'Source archive notice differs from upstream'
 if platform in ('all', 'swift'):
-    bundles = list((ROOT/'.build').glob('*/debug/TailwindNative_swiftui.bundle/LICENSE.tailwind'))
+    bundles = list((ROOT/'.build').rglob('TailwindNative_swiftui.bundle/Contents/Resources/LICENSE.tailwind'))
     assert bundles, 'Swift resource bundle is missing'
     assert all(bundle.read_bytes() == license_text for bundle in bundles), 'Swift resource notice differs from upstream'
 print(f'{platform}: distributed upstream notices verified.')
