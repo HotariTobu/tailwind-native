@@ -10,5 +10,5 @@ Avoid the app size bloat of UI libraries and cross-platform frameworks like Reac
 
 ## Platforms
 
-- [SwiftUI](swiftui/)
 - [Jetpack Compose](jetpackcompose/)
+- [SwiftUI](swiftui/)
