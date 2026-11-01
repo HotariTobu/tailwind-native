@@ -14,7 +14,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  apple:
+  jetpackcompose:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+        with:
+          version: '2026.10.25'
+          working_directory: jetpackcompose
+      - name: Test, lint, and package
+        working-directory: jetpackcompose
+        run: |
+          mise run test
+          mise run build
+          mise run lint
+
+  swiftui:
     runs-on: xcode-27
     timeout-minutes: 10
     steps:
@@ -36,19 +52,3 @@ jobs:
         working-directory: swiftui
         run: |
           xcodebuild test -scheme TailwindNative -destination "platform=iOS Simulator,name=iPhone Duo,OS=27.1"
-
-  android:
-    runs-on: ubuntu-26.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v7
-      - uses: jdx/mise-action@v5
-        with:
-          version: '2026.10.25'
-          working_directory: jetpackcompose
-      - name: Test, lint, and package
-        working-directory: jetpackcompose
-        run: |
-          mise run test
-          mise run build
-          mise run lint
