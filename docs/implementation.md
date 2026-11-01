@@ -69,3 +69,9 @@ The reusable `tools/verify-apple.sh` discovers the Xcode-generated scheme and an
 ## Local verification setup
 
 The ignored `jetpackcompose/local.properties` points to `/tmp/tailwind-native-android-sdk`. Full verification was invoked with `ANDROID_HOME=/tmp/tailwind-native-android-sdk` and `GRADLE_USER_HOME=/tmp/tailwind-native-gradle`. Configure these paths for another machine. Build outputs, caches and local SDK paths are excluded from source control.
+
+## Current dependency migration verification — 2026-11-02
+
+Commit `ff37aa633fd1de3a7728289bdd41653d84cf8ce2` passed [Verify run 41330372229](https://github.com/HotariTobu/tailwind-native/actions/runs/41330372229) on the current dependency baseline. Both jobs succeeded with zero check annotations. Swift: 25 macOS tests, independent consumer, all declared device SDK targets and 12 iOS Simulator tests passed. Android: 41 tests across API 31 and 37, lint, release packaging, Maven and composite consumers passed. Python's four token checks and both platforms' distributed license checks passed. The latest Tailwind 4.3.3 reference includes all 26 color families. See [the dependency audit](dependencies.md) for exact versions and verification limits.
+
+This supersedes the earlier completion evidence for the current code and toolchain. Android API 31 and macOS 14 are the supported minimums; Compose input uses `TextFieldState`. No legacy plugin opt-outs or older-Android blur no-op are retained. A following documentation-only commit records these results.
