@@ -1,0 +1,146 @@
+// Tailwind CSS v4.3.3 tokens; distributed under the accompanying MIT license.
+import SwiftUI
+
+public extension TW {
+    static let spacingUnit: Double = 4
+    enum Radius: Double, CaseIterable, Sendable {
+        case none = 0
+        case xs = 2
+        case sm = 4
+        case md = 6
+        case lg = 8
+        case xl = 12
+        case xxl = 16
+        case xxxl = 24
+        case x4l = 32
+        case full = 9999
+    }
+    enum TextSize: Double, CaseIterable, Sendable {
+        case xs = 12
+        case sm = 14
+        case base = 16
+        case lg = 18
+        case xl = 20
+        case xxl = 24
+        case xxxl = 30
+        case x4l = 36
+        case x5l = 48
+        case x6l = 60
+        case x7l = 72
+        case x8l = 96
+        case x9l = 128
+        public var lineHeight: Double {
+            switch self {
+            case .xs: 16
+            case .sm: 20
+            case .base: 24
+            case .lg: 28
+            case .xl: 28
+            case .xxl: 32
+            case .xxxl: 36
+            case .x4l: 40
+            case .x5l: 48
+            case .x6l: 60
+            case .x7l: 72
+            case .x8l: 96
+            case .x9l: 128
+            }
+        }
+    }
+    enum Weight: Double, CaseIterable, Sendable {
+        case thin = 100
+        case extralight = 200
+        case light = 300
+        case `normal` = 400
+        case medium = 500
+        case semibold = 600
+        case bold = 700
+        case extrabold = 800
+        case black = 900
+        public var native: Font.Weight {
+            switch self {
+            case .thin: .ultraLight
+            case .extralight: .thin
+            case .light: .light
+            case .`normal`: .regular
+            case .medium: .medium
+            case .semibold: .semibold
+            case .bold: .bold
+            case .extrabold: .heavy
+            case .black: .black
+            }
+        }
+    }
+    enum Tracking: Double, CaseIterable, Sendable {
+        case tighter = -0.05
+        case tight = -0.025
+        case `normal` = 0
+        case wide = 0.025
+        case wider = 0.05
+        case widest = 0.1
+    }
+    enum Leading: Double, CaseIterable, Sendable {
+        case tight = 1.25
+        case snug = 1.375
+        case `normal` = 1.5
+        case relaxed = 1.625
+        case loose = 2
+    }
+    enum Container: Double, CaseIterable, Sendable {
+        case xxxs = 256
+        case xxs = 288
+        case xs = 320
+        case sm = 384
+        case md = 448
+        case lg = 512
+        case xl = 576
+        case xxl = 672
+        case xxxl = 768
+        case x4l = 896
+        case x5l = 1024
+        case x6l = 1152
+        case x7l = 1280
+    }
+    enum Breakpoint: Double, CaseIterable, Sendable {
+        case sm = 640
+        case md = 768
+        case lg = 1024
+        case xl = 1280
+        case xxl = 1536
+        public func matches(width: Double) -> Bool { width >= rawValue }
+    }
+    enum Blur: Double, CaseIterable, Sendable {
+        case none = 0
+        case xs = 4
+        case sm = 8
+        case md = 12
+        case lg = 16
+        case xl = 24
+        case xxl = 40
+        case xxxl = 64
+    }
+    struct ShadowLayer: Sendable, Equatable {
+        public let x, y, blur, spread, opacity: Double
+        public init(x: Double, y: Double, blur: Double, spread: Double, opacity: Double) {
+            precondition([x, y, blur, spread, opacity].allSatisfy { $0.isFinite } && blur >= 0 && (0...1).contains(opacity), "Invalid shadow layer")
+            self.x = x; self.y = y; self.blur = blur; self.spread = spread; self.opacity = opacity
+        }
+    }
+    enum Shadow: CaseIterable, Sendable {
+        case none, xxs, xs, sm, md, lg, xl, xxl
+        public var layers: [ShadowLayer] {
+            switch self {
+            case .none: []
+            case .xxs: [.init(x: 0, y: 1, blur: 0, spread: 0, opacity: 0.05)]
+            case .xs: [.init(x: 0, y: 1, blur: 2, spread: 0, opacity: 0.05)]
+            case .sm: [.init(x: 0, y: 1, blur: 3, spread: 0, opacity: 0.1), .init(x: 0, y: 1, blur: 2, spread: -1, opacity: 0.1)]
+            case .md: [.init(x: 0, y: 4, blur: 6, spread: -1, opacity: 0.1), .init(x: 0, y: 2, blur: 4, spread: -2, opacity: 0.1)]
+            case .lg: [.init(x: 0, y: 10, blur: 15, spread: -3, opacity: 0.1), .init(x: 0, y: 4, blur: 6, spread: -4, opacity: 0.1)]
+            case .xl: [.init(x: 0, y: 20, blur: 25, spread: -5, opacity: 0.1), .init(x: 0, y: 8, blur: 10, spread: -6, opacity: 0.1)]
+            case .xxl: [.init(x: 0, y: 25, blur: 50, spread: -12, opacity: 0.25)]
+            }
+        }
+        public var radius: Double { (layers.first?.blur ?? 0) / 2 }
+        public var y: Double { layers.first?.y ?? 0 }
+    }
+}

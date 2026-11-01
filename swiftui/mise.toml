@@ -1,2 +1,8 @@
 [tools]
-swift = "latest"
+swift = "6.4.2"
+
+[tasks.test]
+run = "swift test"
+
+[tasks.build]
+run = "swift build"

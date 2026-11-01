@@ -1,0 +1,138 @@
+// Tailwind CSS v4.3.3 tokens; distributed under the accompanying MIT license.
+package dev.tailwind.nativeui
+
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
+
+object TW {
+    const val spacingUnit: Double = 4.0
+    fun spacing(value: Number): androidx.compose.ui.unit.Dp {
+        require(value.toDouble() >= 0) { "Spacing must be nonnegative" }
+        return signedSpacing(value)
+    }
+    fun signedSpacing(value: Number): androidx.compose.ui.unit.Dp {
+        val points = finiteNumber(value) * spacingUnit
+        return nativeFloat(points).dp
+    }
+    enum class Radius(val points: Int) {
+        None(0),
+        Xs(2),
+        Sm(4),
+        Md(6),
+        Lg(8),
+        Xl(12),
+        Xxl(16),
+        Xxxl(24),
+        X4l(32),
+        Full(9999);
+    }
+    enum class TextSize(val points: Int) {
+        Xs(12),
+        Sm(14),
+        Base(16),
+        Lg(18),
+        Xl(20),
+        Xxl(24),
+        Xxxl(30),
+        X4l(36),
+        X5l(48),
+        X6l(60),
+        X7l(72),
+        X8l(96),
+        X9l(128);
+        val native get() = points.sp
+        val lineHeight: Int get() = when (this) {
+            Xs -> 16
+            Sm -> 20
+            Base -> 24
+            Lg -> 28
+            Xl -> 28
+            Xxl -> 32
+            Xxxl -> 36
+            X4l -> 40
+            X5l -> 48
+            X6l -> 60
+            X7l -> 72
+            X8l -> 96
+            X9l -> 128
+        }
+    }
+    enum class Weight(val points: Int) {
+        Thin(100),
+        Extralight(200),
+        Light(300),
+        Normal(400),
+        Medium(500),
+        Semibold(600),
+        Bold(700),
+        Extrabold(800),
+        Black(900);
+        val native get() = FontWeight(points)
+    }
+    enum class Tracking(val em: Float) {
+        Tighter(-0.05f),
+        Tight(-0.025f),
+        Normal(0f),
+        Wide(0.025f),
+        Wider(0.05f),
+        Widest(0.1f);
+    }
+    enum class Leading(val em: Float) {
+        Tight(1.25f),
+        Snug(1.375f),
+        Normal(1.5f),
+        Relaxed(1.625f),
+        Loose(2f);
+    }
+    enum class Container(val points: Int) {
+        Xxxs(256),
+        Xxs(288),
+        Xs(320),
+        Sm(384),
+        Md(448),
+        Lg(512),
+        Xl(576),
+        Xxl(672),
+        Xxxl(768),
+        X4l(896),
+        X5l(1024),
+        X6l(1152),
+        X7l(1280);
+    }
+    enum class Breakpoint(val points: Int) {
+        Sm(640),
+        Md(768),
+        Lg(1024),
+        Xl(1280),
+        Xxl(1536);
+        fun matches(width: Float) = width >= points
+    }
+    enum class Blur(val points: Int) {
+        None(0),
+        Xs(4),
+        Sm(8),
+        Md(12),
+        Lg(16),
+        Xl(24),
+        Xxl(40),
+        Xxxl(64);
+    }
+    data class ShadowLayer(val x: Float, val y: Float, val blur: Float, val spread: Float, val opacity: Float) {
+        init {
+            require(listOf(x, y, blur, spread, opacity).all { it.isFinite() } && blur >= 0 && opacity in 0f..1f) { "Invalid shadow layer" }
+        }
+    }
+    enum class Shadow(val layers: List<ShadowLayer>) {
+        None(listOf()),
+        Xxs(listOf(ShadowLayer(0f, 1f, 0f, 0f, 0.05f))),
+        Xs(listOf(ShadowLayer(0f, 1f, 2f, 0f, 0.05f))),
+        Sm(listOf(ShadowLayer(0f, 1f, 3f, 0f, 0.1f), ShadowLayer(0f, 1f, 2f, -1f, 0.1f))),
+        Md(listOf(ShadowLayer(0f, 4f, 6f, -1f, 0.1f), ShadowLayer(0f, 2f, 4f, -2f, 0.1f))),
+        Lg(listOf(ShadowLayer(0f, 10f, 15f, -3f, 0.1f), ShadowLayer(0f, 4f, 6f, -4f, 0.1f))),
+        Xl(listOf(ShadowLayer(0f, 20f, 25f, -5f, 0.1f), ShadowLayer(0f, 8f, 10f, -6f, 0.1f))),
+        Xxl(listOf(ShadowLayer(0f, 25f, 50f, -12f, 0.25f)));
+    }
+}
+
+typealias Breakpoint = TW.Breakpoint
