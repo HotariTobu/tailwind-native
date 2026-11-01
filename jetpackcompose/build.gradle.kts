@@ -1,6 +1,7 @@
+buildscript { dependencies { classpath(libs.kotlin.gradle.plugin) } }
+
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("maven-publish")
 }
@@ -8,19 +9,26 @@ group = "dev.tailwind"
 version = "0.1.0"
 android {
     namespace = "dev.tailwind.nativeui"
-    compileSdk = 35
-    defaultConfig { minSdk = 21 }
+    compileSdk = 37
+    defaultConfig { minSdk = 31 }
     buildFeatures { compose = true }
-    testOptions { unitTests.isIncludeAndroidResources = true }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        // Robolectric's documented JDK 17+ reflection requirement, scoped to tests.
+        unitTests.all {
+            it.jvmArgs("--add-opens=java.base/jdk.internal.access=ALL-UNNAMED",
+                "--enable-native-access=ALL-UNNAMED")
+        }
+    }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     publishing { singleVariant("release") { withSourcesJar() } }
 }
 kotlin {
-    jvmToolchain(21)
-    compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
+    jvmToolchain(25)
+    compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21) }
 }
 dependencies {
     api(platform(libs.compose.bom))
@@ -28,6 +36,7 @@ dependencies {
     api(libs.compose.ui)
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
+    testImplementation(libs.espresso.core)
     testImplementation(libs.compose.test.junit4)
     debugImplementation(libs.compose.test.manifest)
 }

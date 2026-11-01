@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.KeyboardActionHandler
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -57,18 +60,21 @@ fun TWButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolea
         enabled = enabled, role = Role.Button, onClick = onClick), content = content)
 }
 @Composable
-fun TWInput(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier,
-            enabled: Boolean = true, singleLine: Boolean = true,
+fun TWInput(state: TextFieldState, modifier: Modifier = Modifier,
+            enabled: Boolean = true, readOnly: Boolean = false,
+            lineLimits: TextFieldLineLimits = TextFieldLineLimits.SingleLine,
             style: TextStyle = TextStyle.Default,
             interactionSource: MutableInteractionSource? = null,
             keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-            keyboardActions: KeyboardActions = KeyboardActions.Default,
-            visualTransformation: VisualTransformation = VisualTransformation.None) {
+            onKeyboardAction: KeyboardActionHandler? = null,
+            inputTransformation: InputTransformation? = null,
+            outputTransformation: OutputTransformation? = null) {
     val textStyle = LocalTWTextStyle.current.merge(style)
-    BasicTextField(value, onValueChange, modifier, enabled = enabled,
-        singleLine = singleLine, textStyle = textStyle, cursorBrush = SolidColor(textStyle.color),
+    BasicTextField(state = state, modifier = modifier, enabled = enabled, readOnly = readOnly,
+        lineLimits = lineLimits, textStyle = textStyle, cursorBrush = SolidColor(textStyle.color),
         interactionSource = interactionSource, keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions, visualTransformation = visualTransformation)
+        onKeyboardAction = onKeyboardAction, inputTransformation = inputTransformation,
+        outputTransformation = outputTransformation)
 }
 @Composable
 fun TWRow(modifier: Modifier = Modifier, gap: Number = 0,

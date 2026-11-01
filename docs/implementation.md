@@ -23,7 +23,7 @@ Tailwind Native strips native control decoration and provides Tailwind-style uti
 6. Automated verification runs successfully, and binary/source distributions include the required upstream notice.
 7. Supported Apple platform claims are checked against their SDKs, rather than inferred from the macOS build.
 
-## Verified evidence — 2026-11-02
+## Historical verification before dependency migration — 2026-11-02
 
 `tools/verify.sh` completed successfully using Apple Swift 6.3.3, JDK 21.0.2, Gradle 8.11.1, Android SDK 35 and build-tools 35.0.0.
 
@@ -36,7 +36,7 @@ Tailwind Native strips native control decoration and provides Tailwind-style uti
 - AAR classes JAR, source JAR and Swift resource bundle contain the exact upstream license notice.
 - `git diff --check` passed.
 
-Compose 1.8's standard screenshot helper waits for a hardware frame callback absent from Robolectric. Pixel tests draw the real view hierarchy to a native Canvas instead, retaining color assertions rather than dropping screenshot coverage. Swift pixel tests clear their destination buffers and use explicit sRGB fills for conditional-style comparisons.
+Pixel assertions render the actual View tree to a native Canvas; Robolectric/API 37 window capture can return stale buffers. Swift pixel tests clear their destination buffers and use explicit sRGB fills for conditional-style comparisons.
 
 ## Coverage audit
 
@@ -48,7 +48,7 @@ Compose 1.8's standard screenshot helper waits for a hardware frame callback abs
 - Environments: explicit conditions, local dark themes, pointer hover and mobile-first breakpoints.
 - Delivery: public package products, a Maven AAR with exported dependencies, source archives, consumer fixtures, reusable verification commands and upstream notices in distributed artifacts.
 
-## Completion audit — 2026-11-02
+## Historical implementation audit — 2026-11-02
 
 The implementation at commit `6f27b089e1704624ee56ecef71d941cd7cfa62dc` passed [GitHub Verify run 41324992656](https://github.com/HotariTobu/tailwind-native/actions/runs/41324992656). Both the Apple and Android jobs completed successfully.
 
@@ -62,7 +62,7 @@ The implementation at commit `6f27b089e1704624ee56ecef71d941cd7cfa62dc` passed [
 | Automated delivery verification | Android Lint reported no issues. Release AAR, source JAR, Maven and composite consumers, and distributed upstream notices were verified. |
 | Apple platform claims | CI successfully built iOS 16, tvOS 16 and watchOS 9 device targets with their SDKs, then executed the iOS package tests on a simulator. Mac Catalyst also compiled locally with iOS 16 deployment settings. |
 
-All seven completion gates are satisfied. No implementation or verification work remains for this delivery. A subsequent documentation-only commit records this audit; it does not change the implementation verified by the linked run.
+That run verified the earlier implementation, but did not establish dependency lifecycle or security suitability. The current dependency migration requires fresh verification; see [dependencies.md](dependencies.md).
 
 The reusable `tools/verify-apple.sh` discovers the Xcode-generated scheme and an available iPhone simulator. Full Xcode is required for the device-target matrix; the local Command Line Tools alone are sufficient for the macOS checks.
 

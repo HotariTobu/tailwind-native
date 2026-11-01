@@ -4,7 +4,7 @@ Strip default styling from native UI frameworks, and write Tailwind CSS-style ut
 
 ## SwiftUI
 
-Add this repository as a Swift Package dependency and link the `swiftui` product. The root package manifest supports Git-based installation; `swiftui/` also remains usable as a local package. Requires Swift 6.3, iOS 16 / macOS 13 / tvOS 16 / watchOS 9 or later.
+Add this repository as a Swift Package dependency and link the `swiftui` product. The root package manifest supports Git-based installation; `swiftui/` also remains usable as a local package. Requires Swift 6.4, iOS 16 / macOS 13 / tvOS 16 / watchOS 9 or later.
 
 ```swift
 import SwiftUI
@@ -23,7 +23,7 @@ TWColumn(gap: 4) {
 
 ## Jetpack Compose
 
-Requires JDK 21 and Android SDK 35 (minimum Android API 21). Use a composite build in your app's `settings.gradle.kts`:
+Requires JDK 25 and Android SDK 37 (minimum Android API 31). Use a composite build in your app's `settings.gradle.kts`:
 
 ```kotlin
 includeBuild("../tailwind-native/jetpackcompose")
@@ -82,7 +82,7 @@ For interaction variants in Compose, pass a shared `MutableInteractionSource` to
 
 The generated numeric scales include radii, text sizes and reference line heights, font weights, tracking, leading, container widths, breakpoints, and blur. Both native sources come from `tokens/theme.css`; fixtures are in `tokens/scales.json`. Text-size utilities set the font size while retaining native line metrics. Compose `TextStyle.leading` accepts a multiplier or a `TW.Leading` token; SwiftUI exposes its native `lineSpacing` and `Font.leading` APIs rather than claiming CSS line-box equivalence. Compose text truncation uses `TWText(maxLines = ..., overflow = TextOverflow.Ellipsis)`; SwiftUI provides `truncate()` and `lineClamp()`.
 
-Native blur accepts a `TW.Blur` token or a nonnegative point/dp radius. Android blur requires API 31 or later and follows the native no-op behavior on older versions. `shadow(TW.Shadow, color:, radius:)` / `Modifier.shadow(TW.Shadow, color, radius)` use the official outer box-shadow layers, including spread, opacity, and offsets. Custom layers use `TW.ShadowLayer`. Shadows paint outside the box without changing layout or filling its transparent interior; native rasterization can differ at antialiased or blurred edges.
+Native blur accepts a `TW.Blur` token or a nonnegative point/dp radius. Android API 31 is the minimum supported version, so native blur is available throughout the supported range. `shadow(TW.Shadow, color:, radius:)` / `Modifier.shadow(TW.Shadow, color, radius)` use the official outer box-shadow layers, including spread, opacity, and offsets. Custom layers use `TW.ShadowLayer`. Shadows paint outside the box without changing layout or filling its transparent interior; native rasterization can differ at antialiased or blurred edges.
 
 SwiftUI text uses `ScaledMetric` for platforms that support Dynamic Type. macOS retains its native fixed text sizes, as specified by [Apple's dynamicTypeSize documentation](https://developer.apple.com/documentation/swiftui/environmentvalues/dynamictypesize). SwiftUI conditional variants change view structure like native conditional views; keep persistent model/editing state above a variant boundary. Compose variants retain their surrounding composition and native interaction state.
 
@@ -96,3 +96,5 @@ SwiftUI `TWButton.pressed { label in ... }` applies a style using the native but
 Place the shadow outside a clipping modifier: SwiftUI commonly uses `.rounded(.lg).shadow(.md, radius: .lg)`, while Compose uses `Modifier.shadow(TW.Shadow.Md, radius = TW.Radius.Lg).rounded(TW.Radius.Lg)`. The shadow's `radius` is explicit because native method chains do not share a CSS cascade.
 
 `./tools/verify-apple.sh` additionally requires full Xcode with iOS, tvOS and watchOS SDKs and an installed iPhone simulator. It builds the declared device targets and runs the Swift package tests on iOS Simulator, including Dynamic Type. GitHub CI uses Xcode 26.5 on `macos-26`; the Android job verifies Linux consumers independently. See [effect semantics](docs/effects.md) for rendering details and reference sources.
+
+Dependency versions, update rationale, and verification limits are recorded in [the dependency audit](docs/dependencies.md). Compose `TWInput` accepts a Foundation `TextFieldState` (for example, `rememberTextFieldState()`), with native input/output transformations.

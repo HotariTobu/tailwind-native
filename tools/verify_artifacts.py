@@ -16,7 +16,7 @@ if platform in ('all', 'android'):
     with ZipFile(aar_path) as aar:
         with ZipFile(BytesIO(aar.read('classes.jar'))) as classes:
             assert classes.read(notice) == license_text, 'AAR notice differs from upstream'
-    sources = ROOT/'jetpackcompose/build/intermediates/source_jar/release/release-sources.jar'
+    sources = ROOT/'jetpackcompose/build/verification-maven/dev/tailwind/tailwind-jetpackcompose/0.1.0/tailwind-jetpackcompose-0.1.0-sources.jar'
     with ZipFile(sources) as archive:
         assert archive.read(notice) == license_text, 'Source archive notice differs from upstream'
 if platform in ('all', 'swift'):

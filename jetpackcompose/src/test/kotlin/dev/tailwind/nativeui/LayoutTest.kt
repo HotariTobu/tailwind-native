@@ -4,10 +4,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.Modifier
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.graphics.Color
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import kotlin.math.roundToInt
 import androidx.compose.ui.platform.testTag
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,7 +18,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -28,7 +28,7 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.assertHeightIsEqualTo
 import androidx.compose.ui.test.assertWidthIsEqualTo
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
@@ -40,7 +40,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [35])
+@Config(sdk = [31, 37])
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class LayoutTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
@@ -95,8 +95,8 @@ class LayoutTest {
 
     @Test fun plainInputRetainsEditing() {
         compose.setContent {
-            val value = remember { mutableStateOf("") }
-            TWInput(value.value, { value.value = it }, Modifier.testTag("input").w(40))
+            val state = rememberTextFieldState()
+            TWInput(state, Modifier.testTag("input").w(40))
         }
         compose.onNodeWithTag("input").performTextInput("Native")
         compose.onNodeWithTag("input").assertTextEquals("Native")
@@ -218,21 +218,19 @@ class LayoutTest {
         assertEquals(Color.White, captureCenterColor("shadowCanvas"))
     }
 
-    // Compose 1.8 captureToImage waits on a hardware FrameCommitCallback that
-    // Robolectric cannot deliver. Draw the actual view tree to a native Canvas.
-    private fun captureCenterColor(tag: String): Color {
-        return captureColorAt(compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInWindow.center)
-    }
+    private fun captureCenterColor(tag: String): Color =
+        captureColorAt(compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInWindow.center)
 
-    private fun captureColorAt(center: Offset): Color {
-        return compose.runOnIdle {
-            val view = compose.activity.window.decorView
-            val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+    // PixelCopy under Robolectric/API 37 can return a stale window buffer.
+    // Render the actual view tree with native graphics for deterministic pixel assertions.
+    private fun captureColorAt(center: Offset): Color = compose.runOnIdle {
+        val view = compose.activity.window.decorView
+        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+        try {
             view.draw(Canvas(bitmap))
-            val color = Color(bitmap.getPixel(center.x.roundToInt(), center.y.roundToInt()))
+            Color(bitmap.getPixel(center.x.roundToInt(), center.y.roundToInt()))
+        } finally {
             bitmap.recycle()
-            color
         }
     }
-
 }
