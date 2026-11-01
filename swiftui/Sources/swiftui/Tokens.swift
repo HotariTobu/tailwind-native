@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Shared Tailwind token namespace. Native numeric values are generated from the pinned theme.
+/// Shared Tailwind token namespace.
 public enum TW {
     public static func spacing(_ value: Double) -> CGFloat {
         precondition(value >= 0, "Spacing must be nonnegative")

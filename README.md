@@ -91,4 +91,4 @@ See [effect semantics](docs/effects.md) for layer composition and rendering limi
 
 See [development tools, verification and examples](docs/development.md).
 
-Regenerate native colors, numeric scales and JSON fixtures with `python3 tools/generate_tokens.py`. The source is the vendored [Tailwind CSS v4.3.3 theme](https://github.com/tailwindlabs/tailwindcss/blob/v4.3.3/packages/tailwindcss/theme.css). OKLCH colors are converted to 8-bit sRGB with channel clipping. Preserve the [upstream MIT license](tokens/LICENSE.tailwind) when redistributing derived code or artifacts; binary and source packages include it.
+Colors and numeric scales are defined directly in each library using [Tailwind CSS v4.3.3](https://github.com/tailwindlabs/tailwindcss/blob/v4.3.3/packages/tailwindcss/theme.css) values. Colors use 8-bit sRGB with out-of-gamut channel clipping. Preserve the accompanying [MIT license](swiftui/Sources/swiftui/Resources/LICENSE.tailwind) when redistributing derived code or artifacts.

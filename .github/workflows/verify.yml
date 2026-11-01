@@ -17,15 +17,23 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Verify tokens
-        run: python3 tools/test_tokens.py
       - name: Test macOS and compile consumer
         run: |
           swift test --package-path swiftui
           swift build --package-path examples/swiftui-app
-          python3 tools/verify_artifacts.py --platform swift
-      - name: Build Apple device targets and test iOS Simulator
-        run: ./tools/verify-apple.sh
+          cmp swiftui/Sources/swiftui/Resources/LICENSE.tailwind swiftui/.build/out/Products/Debug/TailwindNative_swiftui.bundle/Contents/Resources/LICENSE.tailwind
+          cmp swiftui/Sources/swiftui/Resources/LICENSE.tailwind jetpackcompose/src/main/resources/META-INF/tailwind-native/LICENSE.tailwind
+      - name: Build Apple device targets
+        working-directory: swiftui
+        run: |
+          swift build --sdk "$(xcrun --sdk iphoneos --show-sdk-path)" --triple arm64-apple-ios16.0 --scratch-path .build/ios
+          swift build --sdk "$(xcrun --sdk appletvos --show-sdk-path)" --triple arm64-apple-tvos16.0 --scratch-path .build/tvos
+          swift build --sdk "$(xcrun --sdk watchos --show-sdk-path)" --triple arm64_32-apple-watchos9.0 --scratch-path .build/watchos
+      - name: Test iOS Simulator
+        working-directory: swiftui
+        run: |
+          simulator_id=$(xcrun simctl list devices available --json | python3 -c 'import json,sys; print(next(d["udid"] for runtime, devices in json.load(sys.stdin)["devices"].items() if ".iOS-" in runtime for d in devices if d.get("isAvailable") and "iPhone" in d["name"]))')
+          xcodebuild test -scheme TailwindNative -destination "platform=iOS Simulator,id=$simulator_id" -derivedDataPath "$RUNNER_TEMP/DerivedData" CODE_SIGNING_ALLOWED=NO
   android:
     runs-on: ubuntu-26.04
     timeout-minutes: 20
@@ -43,7 +51,15 @@ jobs:
           "$RUNNER_TEMP/android-tools/cmdline-tools/bin/android" --no-metrics --sdk "$ANDROID_HOME" sdk install "platforms;android-37"
           "$RUNNER_TEMP/android-tools/cmdline-tools/bin/android" --no-metrics --sdk "$ANDROID_HOME" sdk install "build-tools;36.0.0"
       - name: Test, lint, package, and verify consumers
+        working-directory: jetpackcompose
         run: |
-          python3 tools/test_tokens.py
-          ./tools/verify-android.sh
-          python3 tools/verify_artifacts.py --platform android
+          ./gradlew testDebugUnitTest assembleRelease lintRelease publishToMavenLocal "-Dmaven.repo.local=$RUNNER_TEMP/maven"
+          ./gradlew -p ../examples/compose "-PtailwindNativeRepository=$RUNNER_TEMP/maven" assembleDebug
+          ./gradlew -p ../examples/compose assembleDebug
+      - name: Verify distributed license notices
+        working-directory: jetpackcompose
+        run: |
+          notice=src/main/resources/META-INF/tailwind-native/LICENSE.tailwind
+          unzip -p build/outputs/aar/tailwind-jetpackcompose-release.aar classes.jar > "$RUNNER_TEMP/classes.jar"
+          unzip -p "$RUNNER_TEMP/classes.jar" META-INF/tailwind-native/LICENSE.tailwind | cmp "$notice" -
+          unzip -p "$RUNNER_TEMP/maven/dev/tailwind/tailwind-jetpackcompose/0.1.0/tailwind-jetpackcompose-0.1.0-sources.jar" META-INF/tailwind-native/LICENSE.tailwind | cmp "$notice" -
