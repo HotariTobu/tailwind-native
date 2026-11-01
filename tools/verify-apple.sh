@@ -28,7 +28,26 @@ for runtime, entries in devices.items():
                 raise SystemExit(0)
 raise SystemExit("No available iPhone simulator. Install an iOS simulator runtime in Xcode.")
 ' "$ROOT/.build/apple/simulators.json")
+xcodebuild -list -json > "$ROOT/.build/apple/schemes.json"
+ios_scheme=$(python3 -c '
+import json, sys
+with open(sys.argv[1]) as f:
+    listing = json.load(f)
+schemes = []
+for section in listing.values():
+    if isinstance(section, dict):
+        schemes.extend(section.get("schemes", []))
+for preferred in ("TailwindNative-Package", "TailwindNative", "swiftui"):
+    if preferred in schemes:
+        print(preferred)
+        raise SystemExit(0)
+if len(schemes) == 1:
+    print(schemes[0])
+else:
+    raise SystemExit("Cannot identify the package test scheme: " + repr(schemes))
+' "$ROOT/.build/apple/schemes.json")
 ios_result_bundle="$ROOT/.build/apple/iOS-$(date +%s).xcresult"
-xcodebuild test -scheme swiftui -destination "platform=iOS Simulator,id=$ios_simulator_uuid" \
+printf '%s\n' "Testing iOS scheme: $ios_scheme"
+xcodebuild test -scheme "$ios_scheme" -destination "platform=iOS Simulator,id=$ios_simulator_uuid" \
     -derivedDataPath "$ROOT/.build/apple/DerivedData" -resultBundlePath "$ios_result_bundle" \
     CODE_SIGNING_ALLOWED=NO

@@ -53,7 +53,7 @@ Compose 1.8's standard screenshot helper waits for a hardware frame callback abs
 The implementation and local verification are complete for macOS and Android. The Mac Catalyst build also succeeded with iOS 16 deployment settings and the macOS SDK's iOSSupport framework search path, exercising the iOS conditional code. A Catalyst build is not proof of iPhone/tvOS/watchOS builds or the iOS runtime test.
 
 - The final source state also compiled successfully with the pinned Swift 6.4.0 development toolchain.
-- Run the new GitHub `Verify` workflow on the implementation branch. The Apple job builds the declared iOS/tvOS/watchOS deployment targets and runs tests, including Dynamic Type, on an installed iPhone simulator. The Android job independently verifies Linux compilation, tests, Lint, distributions and both consumer integration paths.
+- GitHub CI verified the declared iOS/tvOS/watchOS device SDK builds at commit `49c93e4`, along with macOS tests/consumer compilation. Its Android job verified Linux compilation, tests, Lint, distributions and both consumer integration paths. Finish the iPhone simulator test run, including Dynamic Type, after discovering the generated Xcode package scheme from its actual list.
 - Inspect workflow results, fix failures, and perform the final gate-by-gate audit. The goal remains active until those results prove completion.
 
 The local Apple Command Line Tools do not contain the iPhoneOS/tvOS/watchOS SDKs. Remote CI uses full Xcode 26.5 on the documented GitHub `macos-26` image rather than treating absent local SDKs as successful checks.
