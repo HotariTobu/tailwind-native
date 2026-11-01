@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "registries": {
+    "[default]": {
+      "url": "https://swift.cloudsmith.io/hotaritobu/tailwind-native/"
+    }
+  }
+}

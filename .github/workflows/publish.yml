@@ -1,0 +1,62 @@
+name: Publish
+
+'on':
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+env:
+  RELEASE_TAG: ${{ github.event.release.tag_name }}
+
+jobs:
+  verify:
+    uses: $/.github/workflows/verify.yml
+
+  jetpackcompose:
+    needs: verify
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: jetpackcompose
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+        with:
+          version: '2026.10.25'
+          working_directory: jetpackcompose
+      - name: Publish
+        env:
+          REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+        run: |
+          mise run publish -- -PreleaseVersion="$RELEASE_TAG"
+
+  swiftui:
+    needs: verify
+    runs-on: xcode-27
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: swiftui
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+        with:
+          version: '2026.10.25'
+          working_directory: swiftui
+      - name: Prepare license resource
+        run: |
+          rm Sources/swiftui/Resources/LICENSE.tailwind
+          cp ../LICENSE.tailwind Sources/swiftui/Resources/LICENSE.tailwind
+      - name: Publish
+        env:
+          SWIFTPM_REGISTRY_LOGIN: ${{ secrets.REGISTRY_USERNAME }}
+          SWIFTPM_REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+        run: mise run publish -- "$RELEASE_TAG"
