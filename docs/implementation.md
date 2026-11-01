@@ -48,15 +48,23 @@ Compose 1.8's standard screenshot helper waits for a hardware frame callback abs
 - Environments: explicit conditions, local dark themes, pointer hover and mobile-first breakpoints.
 - Delivery: public package products, a Maven AAR with exported dependencies, source archives, consumer fixtures, reusable verification commands and upstream notices in distributed artifacts.
 
-## Verification still required
+## Completion audit — 2026-11-02
 
-The implementation and local verification are complete for macOS and Android. The Mac Catalyst build also succeeded with iOS 16 deployment settings and the macOS SDK's iOSSupport framework search path, exercising the iOS conditional code. A Catalyst build is not proof of iPhone/tvOS/watchOS builds or the iOS runtime test.
+The implementation at commit `6f27b089e1704624ee56ecef71d941cd7cfa62dc` passed [GitHub Verify run 41324992656](https://github.com/HotariTobu/tailwind-native/actions/runs/41324992656). Both the Apple and Android jobs completed successfully.
 
-- The final source state also compiled successfully with the pinned Swift 6.4.0 development toolchain.
-- GitHub CI verified the declared iOS/tvOS/watchOS device SDK builds at commit `49c93e4`, along with macOS tests/consumer compilation. Its Android job verified Linux compilation, tests, Lint, distributions and both consumer integration paths. Finish the iPhone simulator test run, including Dynamic Type, after discovering the generated Xcode package scheme from its actual list.
-- Inspect workflow results, fix failures, and perform the final gate-by-gate audit. The goal remains active until those results prove completion.
+| Gate | Verified evidence |
+| --- | --- |
+| Pinned builds | Apple Swift 6.3.3 and the pinned Swift 6.4.0 compiled the library locally; CI used full Xcode 26.5. Gradle, Kotlin, AGP, Compose BOM and JDK versions are pinned. |
+| Common tokens and utilities | Generated native colors/numeric scales match the vendored theme; reproducibility, reference-value and validation checks passed. Native adapters and their differences are documented. |
+| Public native APIs | Both libraries and independent consumer examples compile. Reset controls, layout, typography, decoration, effects, transforms and state/environment variants are implemented. |
+| Runtime behavior | macOS: 25 tests passed. Android: 26 tests passed, including native actions, input editing, state styling, layout and pixels. iOS Simulator: 12 tests passed, explicitly including `textSizeRespectsIOSDynamicType`. Python: 4 checks passed. |
+| Installation and documentation | README, effect semantics, native platform constraints and independent consumer projects are present. |
+| Automated delivery verification | Android Lint reported no issues. Release AAR, source JAR, Maven and composite consumers, and distributed upstream notices were verified. |
+| Apple platform claims | CI successfully built iOS 16, tvOS 16 and watchOS 9 device targets with their SDKs, then executed the iOS package tests on a simulator. Mac Catalyst also compiled locally with iOS 16 deployment settings. |
 
-The local Apple Command Line Tools do not contain the iPhoneOS/tvOS/watchOS SDKs. Remote CI uses full Xcode 26.5 on the documented GitHub `macos-26` image rather than treating absent local SDKs as successful checks.
+All seven completion gates are satisfied. No implementation or verification work remains for this delivery. A subsequent documentation-only commit records this audit; it does not change the implementation verified by the linked run.
+
+The reusable `tools/verify-apple.sh` discovers the Xcode-generated scheme and an available iPhone simulator. Full Xcode is required for the device-target matrix; the local Command Line Tools alone are sufficient for the macOS checks.
 
 ## Local verification setup
 
