@@ -4,12 +4,12 @@ The dependency baseline follows current stable releases. Older SDKs, compiler pl
 
 | Area | Selected baseline |
 | --- | --- |
-| Swift development / manifest | Swift 6.4.2 / tools 6.4 |
+| Swift development / manifest | Swift 6.4.2 / tools 6.4; macOS 14 minimum |
 | Apple CI | Xcode 27.1, explicit `xcode-27` image |
 | Android build | AGP 9.5.0, Gradle 9.8.2, Kotlin and Compose compiler 2.4.21 |
 | Android UI | Compose BOM 2026.09.00 (Foundation/UI 1.12.1) |
 | Java | Temurin 25.0.5+8 LTS; emitted JVM target 21 |
-| Android SDK | compile 37, minimum 31; build tools 36.0.0 |
+| Android SDK | compile 37, minimum 31; build tools 36.0.0; Command-line Tools 22.0 (SHA-256 pinned) |
 | Android tests | Robolectric 4.17, Espresso 3.7.0, JUnit 4.13.2 |
 | CI actions | checkout 7.0.1, setup-java 6.1.0; immutable commit pins, Node 24 |
 | Linux CI | explicit Ubuntu 26.04 |
@@ -23,6 +23,7 @@ The dependency baseline follows current stable releases. Older SDKs, compiler pl
 - [Compose Foundation releases](https://developer.android.com/jetpack/androidx/releases/compose-foundation): use the state-based input API (`TextFieldState`, line limits and transformations). Minimum Android 31 makes native blur available across the supported range; there is no older-Android no-op policy.
 - [AndroidX Test releases](https://developer.android.com/jetpack/androidx/releases/test): explicitly select Espresso 3.7.0 rather than inherit Compose's older transitive Espresso. JUnit 4.13.2 is retained because Robolectric uses its JUnit 4 runner; it is not a production dependency. Pixel assertions render the actual View tree to a native Canvas: Robolectric/API 37 PixelCopy can return stale window buffers. This checks native rendering, not device screenshot infrastructure.
 - [Robolectric setup](https://robolectric.org/getting-started/#running-with-java-17-and-higher): test JVM reflection access is scoped to `jdk.internal.access`; native access is enabled for the test runner's native libraries. These settings do not enter the published AAR or consumer runtime.
+- macOS 14 is the baseline required by the current Swift Testing runtime, avoiding a lower deployment target than its test runtime.
 - [Swift releases](https://www.swift.org/download/), [checkout releases](https://github.com/actions/checkout/releases), [setup-java releases](https://github.com/actions/setup-java/releases) and [runner image inventory](https://github.com/actions/runner-images/blob/main/images/macos/xcode-27-arm64-Readme.md) establish the tool baseline. The Xcode image is preview infrastructure even though the selected Xcode is stable; macOS runner capacity notices are operational notices, not deprecated dependencies.
 
 ## Verification status

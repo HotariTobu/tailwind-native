@@ -4,7 +4,7 @@ Strip default styling from native UI frameworks, and write Tailwind CSS-style ut
 
 ## SwiftUI
 
-Add this repository as a Swift Package dependency and link the `swiftui` product. The root package manifest supports Git-based installation; `swiftui/` also remains usable as a local package. Requires Swift 6.4, iOS 16 / macOS 13 / tvOS 16 / watchOS 9 or later.
+Add this repository as a Swift Package dependency and link the `swiftui` product. The root package manifest supports Git-based installation; `swiftui/` also remains usable as a local package. Requires Swift 6.4, iOS 16 / macOS 14 / tvOS 16 / watchOS 9 or later.
 
 ```swift
 import SwiftUI
