@@ -18,31 +18,28 @@ Gradle and Android Command-line Tools downloads have SHA-256 checksums pinned in
 
 ## Verification
 
-Run from the repository root:
-
-```sh
-./tools/verify.sh
-```
-
-This checks token values and reproducibility, Swift tests, Android tests on API 31 and 37, Android Lint, release packaging, consumer builds, and distributed license notices. Individual checks are:
+Run from the repository root with the configured Swift and JDK available:
 
 ```sh
 python3 tools/test_tokens.py
-./tools/swift.sh test --package-path swiftui
+swift test --package-path swiftui
+swift build --package-path examples/swiftui-app
 ./tools/verify-android.sh
+python3 tools/verify_artifacts.py
 ./tools/verify-apple.sh
 ```
 
-`tools/swift.sh` selects Xcode's Swift when `DEVELOPER_DIR` is set, otherwise the mise toolchain or installed Swift. Apple device verification requires full Xcode with iOS, tvOS and watchOS SDKs and an installed iPhone simulator. It builds device targets and runs iOS tests, including Dynamic Type.
+Android verification runs tests on API 31 and 37, lint, release packaging and both Maven/composite consumers. Artifact verification checks distributed license notices. Apple verification builds iOS, tvOS and watchOS device targets and runs iOS Simulator tests including Dynamic Type; it requires full Xcode and an installed iPhone simulator.
+
+For local Swift commands, use the pinned toolchain with `cd swiftui` followed by `mise exec -- swift test`. CI selects Swift through Xcode's `DEVELOPER_DIR`.
 
 Compose pixel assertions draw the View tree to a native Canvas because Robolectric/API 37 window capture can return stale buffers. Swift pixel tests use explicit sRGB fills and cleared buffers.
 
 ## Consumer examples
 
-The examples compile against public library products:
+The examples use public library products. Compile the Compose example independently with:
 
 ```sh
-./tools/swift.sh build --package-path examples/swiftui-app
 cd jetpackcompose
 mise exec -- ./gradlew -p ../examples/compose assembleDebug
 ```

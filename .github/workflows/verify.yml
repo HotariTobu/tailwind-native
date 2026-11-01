@@ -21,7 +21,7 @@ jobs:
         run: python3 tools/test_tokens.py
       - name: Test macOS and compile consumer
         run: |
-          ./tools/swift.sh test --package-path swiftui
+          swift test --package-path swiftui
           swift build --package-path examples/swiftui-app
           python3 tools/verify_artifacts.py --platform swift
       - name: Build Apple device targets and test iOS Simulator
