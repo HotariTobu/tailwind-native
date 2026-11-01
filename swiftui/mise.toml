@@ -6,3 +6,6 @@ run = "swift test"
 
 [tasks.build]
 run = "swift build"
+
+[tasks.publish]
+run = "swift package-registry publish hotaritobu.tailwind-native"

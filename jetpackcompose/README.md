@@ -1,12 +1,26 @@
 # Tailwind Native for Jetpack Compose
 
-Requires JDK 25 and Android SDK 37, with minimum Android API 31. Add a composite build in your app's `settings.gradle.kts`:
+Requires JDK 25 and Android SDK 37, with minimum Android API 31.
+
+Add the repository to your app's `settings.gradle.kts`:
 
 ```kotlin
-includeBuild("../tailwind-native/jetpackcompose")
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://dl.cloudsmith.io/public/hotaritobu/tailwind-native/maven/") }
+    }
+}
 ```
 
-Add `implementation("dev.tailwind:tailwind-jetpackcompose:0.1.0")` to your dependencies. To use a local Maven artifact instead, run `mise run publish` in `jetpackcompose/` and add `mavenLocal()` to the consumer's repositories.
+Add the dependency to your app module's `build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation("dev.tailwind:tailwind-jetpackcompose:0.1.0")
+}
+```
 
 ```kotlin
 import dev.tailwind.nativeui.*

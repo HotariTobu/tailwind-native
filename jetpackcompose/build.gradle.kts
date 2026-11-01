@@ -6,7 +6,7 @@ plugins {
     id("maven-publish")
 }
 group = "dev.tailwind"
-version = "0.1.0"
+version = providers.gradleProperty("releaseVersion").getOrElse("0.1.0")
 android {
     namespace = "dev.tailwind.nativeui"
     compileSdk = 37
@@ -42,6 +42,16 @@ dependencies {
 }
 afterEvaluate {
     publishing {
+        repositories {
+            maven {
+                name = "Cloudsmith"
+                url = uri("https://maven.cloudsmith.io/hotaritobu/tailwind-native/")
+                credentials {
+                    username = System.getenv("REGISTRY_USERNAME")
+                    password = System.getenv("REGISTRY_PASSWORD")
+                }
+            }
+        }
         publications {
             register<MavenPublication>("release") {
                 from(components["release"])

@@ -1,9 +1,23 @@
 # Tailwind Native for SwiftUI
 
-Clone this repository and add this directory as a local Swift Package dependency. Link the `swiftui` product. Requires Swift 6.4 and iOS 16 / macOS 14 / tvOS 16 / watchOS 9 or later.
+Requires Swift 6.4 and iOS 16 / macOS 14 / tvOS 16 / watchOS 9 or later.
+
+Configure the registry in your consuming project:
+
+```sh
+swift package-registry set --scope hotaritobu https://swift.cloudsmith.io/hotaritobu/tailwind-native/
+```
+
+Add the package dependency to `Package.swift`:
 
 ```swift
-.package(path: "../tailwind-native/swiftui")
+.package(id: "hotaritobu.tailwind-native", from: "0.1.0")
+```
+
+Add the `swiftui` product to your target's dependencies:
+
+```swift
+.product(name: "swiftui", package: "hotaritobu.tailwind-native")
 ```
 
 ```swift
