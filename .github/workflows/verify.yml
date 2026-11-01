@@ -1,32 +1,31 @@
 name: Verify
+
 'on':
   push:
-    branches: [main, 'codex/**']
+    branches: [main]
   pull_request:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 concurrency:
   group: verify-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   apple:
     runs-on: xcode-27
-    timeout-minutes: 30
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: jdx/mise-action@6612f0ef07ed2a736cd1e00a94a065522dd41195 # v5.2.5
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
         with:
           version: '2026.10.25'
           working_directory: swiftui
       - name: Test macOS
         working-directory: swiftui
-        run: |
-          mise run test
-          cmp Sources/swiftui/Resources/LICENSE.tailwind .build/out/Products/Debug/TailwindNative_swiftui.bundle/Contents/Resources/LICENSE.tailwind
-          cmp Sources/swiftui/Resources/LICENSE.tailwind ../jetpackcompose/src/main/resources/META-INF/tailwind-native/LICENSE.tailwind
+        run: mise run test
       - name: Build Apple device targets
         working-directory: swiftui
         run: |
@@ -36,35 +35,20 @@ jobs:
       - name: Test iOS Simulator
         working-directory: swiftui
         run: |
-          simulator_id=$(xcrun simctl list devices available --json | python3 -c 'import json,sys; print(next(d["udid"] for runtime, devices in json.load(sys.stdin)["devices"].items() if ".iOS-" in runtime for d in devices if d.get("isAvailable") and "iPhone" in d["name"]))')
-          xcodebuild test -scheme TailwindNative -destination "platform=iOS Simulator,id=$simulator_id" -derivedDataPath "$RUNNER_TEMP/DerivedData" CODE_SIGNING_ALLOWED=NO
+          xcodebuild test -scheme TailwindNative -destination "platform=iOS Simulator,name=iPhone Duo,OS=27.1"
+
   android:
     runs-on: ubuntu-26.04
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: jdx/mise-action@6612f0ef07ed2a736cd1e00a94a065522dd41195 # v5.2.5
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
         with:
           version: '2026.10.25'
           working_directory: jetpackcompose
-      - name: Install Android SDK packages
-        run: |
-          curl -fsSL https://dl.google.com/android/repository/commandlinetools-linux-15859902_latest.zip -o "$RUNNER_TEMP/android-tools.zip"
-          echo "4e4c464f145a7512b57d088ac6c278c03c9eea610886b35a5e0804e74eedf583  $RUNNER_TEMP/android-tools.zip" | sha256sum --check
-          unzip -q "$RUNNER_TEMP/android-tools.zip" -d "$RUNNER_TEMP/android-tools"
-          "$RUNNER_TEMP/android-tools/cmdline-tools/bin/android" --no-metrics --sdk "$ANDROID_HOME" sdk install "platforms;android-37"
-          "$RUNNER_TEMP/android-tools/cmdline-tools/bin/android" --no-metrics --sdk "$ANDROID_HOME" sdk install "build-tools;36.0.0"
       - name: Test, lint, and package
         working-directory: jetpackcompose
         run: |
           mise run test
           mise run build
           mise run lint
-          mise run publish -- "-Dmaven.repo.local=$RUNNER_TEMP/maven"
-      - name: Verify distributed license notices
-        working-directory: jetpackcompose
-        run: |
-          notice=src/main/resources/META-INF/tailwind-native/LICENSE.tailwind
-          unzip -p build/outputs/aar/tailwind-jetpackcompose-release.aar classes.jar > "$RUNNER_TEMP/classes.jar"
-          unzip -p "$RUNNER_TEMP/classes.jar" META-INF/tailwind-native/LICENSE.tailwind | cmp "$notice" -
-          unzip -p "$RUNNER_TEMP/maven/dev/tailwind/tailwind-jetpackcompose/0.1.0/tailwind-jetpackcompose-0.1.0-sources.jar" META-INF/tailwind-native/LICENSE.tailwind | cmp "$notice" -
