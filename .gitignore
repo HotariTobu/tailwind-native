@@ -2,3 +2,10 @@
 __pycache__/
 .build/
 .swiftpm/
+.gradle/
+.kotlin/
+build/
+DerivedData/
+xcuserdata/
+local.properties
+.netrc
