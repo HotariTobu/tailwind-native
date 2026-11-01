@@ -6,11 +6,11 @@ Tool versions are defined in the platform-specific mise files, Swift manifest, G
 
 ```sh
 cd swiftui
-mise exec -- swift test
-mise exec -- swift build --package-path ../examples/swiftui-app
+mise run test
+mise run build
 ```
 
-Full Xcode is required for iOS, tvOS and watchOS device builds and iOS Simulator tests. CI selects it through `DEVELOPER_DIR`. The SwiftUI example is a macOS application using the public library product.
+Full Xcode is required for iOS, tvOS and watchOS device builds and iOS Simulator tests. CI selects it through `DEVELOPER_DIR`.
 
 ## Jetpack Compose
 
@@ -18,11 +18,10 @@ Set `ANDROID_HOME` or an untracked `jetpackcompose/local.properties` to an SDK c
 
 ```sh
 cd jetpackcompose
-mise exec -- ./gradlew testDebugUnitTest assembleRelease lintRelease
-mise exec -- ./gradlew -p ../examples/compose assembleDebug
+mise run test
+mise run build
+mise run lint
 ```
-
-The example uses a composite build. To test a Maven artifact, run `publishToMavenLocal` with `-Dmaven.repo.local=/path/to/repository`, then build the example with `-PtailwindNativeRepository=/path/to/repository`.
 
 Robolectric, Espresso and JUnit are test-only dependencies. The test JVM opens `jdk.internal.access` and enables native access for test libraries. Pixel assertions draw the View tree to a native Canvas because Robolectric/API 37 window capture can return stale buffers.
 

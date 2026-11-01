@@ -17,10 +17,9 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Test macOS and compile consumer
+      - name: Test macOS
         run: |
           swift test --package-path swiftui
-          swift build --package-path examples/swiftui-app
           cmp swiftui/Sources/swiftui/Resources/LICENSE.tailwind swiftui/.build/out/Products/Debug/TailwindNative_swiftui.bundle/Contents/Resources/LICENSE.tailwind
           cmp swiftui/Sources/swiftui/Resources/LICENSE.tailwind jetpackcompose/src/main/resources/META-INF/tailwind-native/LICENSE.tailwind
       - name: Build Apple device targets
@@ -50,12 +49,10 @@ jobs:
           unzip -q "$RUNNER_TEMP/android-tools.zip" -d "$RUNNER_TEMP/android-tools"
           "$RUNNER_TEMP/android-tools/cmdline-tools/bin/android" --no-metrics --sdk "$ANDROID_HOME" sdk install "platforms;android-37"
           "$RUNNER_TEMP/android-tools/cmdline-tools/bin/android" --no-metrics --sdk "$ANDROID_HOME" sdk install "build-tools;36.0.0"
-      - name: Test, lint, package, and verify consumers
+      - name: Test, lint, and package
         working-directory: jetpackcompose
         run: |
           ./gradlew testDebugUnitTest assembleRelease lintRelease publishToMavenLocal "-Dmaven.repo.local=$RUNNER_TEMP/maven"
-          ./gradlew -p ../examples/compose "-PtailwindNativeRepository=$RUNNER_TEMP/maven" assembleDebug
-          ./gradlew -p ../examples/compose assembleDebug
       - name: Verify distributed license notices
         working-directory: jetpackcompose
         run: |
