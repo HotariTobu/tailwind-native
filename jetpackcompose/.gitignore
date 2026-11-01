@@ -6,3 +6,6 @@ build
 
 # Ignore Kotlin plugin data
 .kotlin
+
+# Machine-specific Android SDK path
+local.properties

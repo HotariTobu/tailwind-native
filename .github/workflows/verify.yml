@@ -1,0 +1,44 @@
+name: Verify
+'on':
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  apple:
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v5
+      - name: Verify tokens
+        run: python3 tools/test_tokens.py
+      - name: Test macOS and compile consumer
+        run: |
+          ./tools/verify-swift.sh
+          swift build --package-path examples/swiftui
+          python3 tools/verify_artifacts.py --platform swift
+      - name: Build Apple device targets and test iOS Simulator
+        run: ./tools/verify-apple.sh
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21.0.2'
+      - name: Install Android SDK packages
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"'
+      - name: Test, lint, package, and verify consumers
+        run: |
+          python3 tools/test_tokens.py
+          ./tools/verify-android.sh
+          python3 tools/verify_artifacts.py --platform android
