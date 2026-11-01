@@ -56,7 +56,7 @@ One spacing unit is 4 points / dp. `p(4)` is 16, `w(64)` is 256; fractional unit
 | Typography | `text` (size or color), `font`, `italicText`, `underlineText`, `lineThrough`, `tracking`, `textStart`, `textCenter`, `textEnd` |
 | Layout | `TWRow`, `TWColumn`, `TWStack`, `TWGrid`, `TWScroll`; explicit zero default gap |
 | Variants | `variant(condition)`, `dark`, `at(breakpoint, width)` |
-| Colors | Swift `TW.Palette.blue500`, Kotlin `Palette.blue500`; all 22 Tailwind palettes plus black, white, transparent |
+| Colors | Swift `TW.Palette.blue500`, Kotlin `Palette.blue500`; all 26 Tailwind palettes plus black, white, transparent |
 
 Typography modifies a SwiftUI view or Compose `TextStyle`, according to the native framework. `at` uses an explicit logical viewport width supplied by the host (for example, `GeometryReader` or `BoxWithConstraints`). Breakpoints are 640, 768, 1024, 1280 and 1536. Focus, pressed, disabled and application-specific states can use `variant` with native state. SwiftUI also exposes `hover`.
 
@@ -64,7 +64,7 @@ Call order follows native layout semantics. These are typed native utilities, no
 
 Wrap a subtree in `TWPreflight` for base text styles (including system light/dark foreground on Compose). SwiftUI `preflight()` applies plain button/input styles and a base font. `TWButton` and `TWInput` also expose undecorated native controls on SwiftUI. Compose `TWButton`, `TWInput`, and `TWText` use undecorated Foundation primitives. Resets apply explicitly to the components where they are used.
 
-CSS DOM selectors, pseudo-elements, browser display modes, CSS positioning and the CSS box model are not emulated. Use native layout containers and scoped modifiers for parent-controlled alignment, sizing and scrolling. Platform differences and completion gates are tracked in [docs/implementation.md](docs/implementation.md).
+CSS DOM selectors, pseudo-elements, browser display modes, CSS positioning and the CSS box model are not emulated. Use native layout containers and scoped modifiers for parent-controlled alignment, sizing and scrolling. Native semantics and verification commands are documented in [docs/implementation.md](docs/implementation.md).
 
 ## Development
 
@@ -95,6 +95,6 @@ SwiftUI `TWButton.pressed { label in ... }` applies a style using the native but
 
 Place the shadow outside a clipping modifier: SwiftUI commonly uses `.rounded(.lg).shadow(.md, radius: .lg)`, while Compose uses `Modifier.shadow(TW.Shadow.Md, radius = TW.Radius.Lg).rounded(TW.Radius.Lg)`. The shadow's `radius` is explicit because native method chains do not share a CSS cascade.
 
-`./tools/verify-apple.sh` additionally requires full Xcode with iOS, tvOS and watchOS SDKs and an installed iPhone simulator. It builds the declared device targets and runs the Swift package tests on iOS Simulator, including Dynamic Type. GitHub CI uses Xcode 26.5 on `macos-26`; the Android job verifies Linux consumers independently. See [effect semantics](docs/effects.md) for rendering details and reference sources.
+`./tools/verify-apple.sh` additionally requires full Xcode with iOS, tvOS and watchOS SDKs and an installed iPhone simulator. It builds the declared device targets and runs the Swift package tests on iOS Simulator, including Dynamic Type. GitHub CI uses Xcode 27.1 on `xcode-27`; the Android job verifies Linux consumers independently. See [effect semantics](docs/effects.md) for rendering details and reference sources.
 
-Dependency versions, update rationale, and verification limits are recorded in [the dependency audit](docs/dependencies.md). Compose `TWInput` accepts a Foundation `TextFieldState` (for example, `rememberTextFieldState()`), with native input/output transformations.
+See [dependencies and toolchains](docs/dependencies.md) for pinned versions and tool requirements. Compose `TWInput` accepts a Foundation `TextFieldState` (for example, `rememberTextFieldState()`), with native input/output transformations.

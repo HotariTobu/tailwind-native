@@ -15,4 +15,4 @@ cd jetpackcompose
 mise exec -- ./gradlew -p ../examples/compose assembleDebug
 ```
 
-Set `ANDROID_HOME` to an SDK containing API 35. You can instead verify a published artifact with `-PtailwindNativeRepository=/path/to/maven/repository`; this disables composite substitution and resolves the Maven AAR, POM and Gradle module metadata.
+Set `ANDROID_HOME` to an SDK containing API 37. You can instead verify a published artifact with `-PtailwindNativeRepository=/path/to/maven/repository`; this disables composite substitution and resolves the Maven AAR, POM and Gradle module metadata.

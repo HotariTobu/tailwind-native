@@ -1,7 +1,7 @@
 # Shared tokens
 
-`theme.css` is copied from Tailwind CSS v4.1.18:
-https://github.com/tailwindlabs/tailwindcss/blob/v4.1.18/packages/tailwindcss/theme.css
+`theme.css` is copied from Tailwind CSS v4.3.3:
+https://github.com/tailwindlabs/tailwindcss/blob/v4.3.3/packages/tailwindcss/theme.css
 
 Tailwind CSS is Copyright Tailwind Labs, Inc., distributed under the MIT license.
 The upstream license must accompany redistributed theme data (see LICENSE.tailwind).

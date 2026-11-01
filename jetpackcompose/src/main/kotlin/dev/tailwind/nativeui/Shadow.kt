@@ -21,7 +21,7 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
-/** Tailwind outer box-shadow masks are cached per size/token, including on Android API 21. */
+/** Tailwind outer box-shadow masks are cached per size/token. */
 fun Modifier.shadow(token: TW.Shadow, color: Color = Color.Black, radius: TW.Radius = TW.Radius.None) =
     shadow(layers = token.layers, color = color, radius = radius)
 
