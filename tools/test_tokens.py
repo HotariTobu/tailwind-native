@@ -11,11 +11,15 @@ ROOT = Path(__file__).resolve().parents[1]
 class TokenTests(unittest.TestCase):
     def test_palette_cardinality_and_anchors(self):
         palette = json.loads((ROOT/'tokens/colors.json').read_text())
-        self.assertEqual(len(palette), 244)
+        self.assertEqual(len(palette), 288)
         self.assertEqual(palette['white'], [255, 255, 255])
         self.assertEqual(palette['black'], [0, 0, 0])
         self.assertEqual(palette['red-500'], [251, 44, 54])
         self.assertEqual(palette['blue-500'], [43, 127, 255])
+        self.assertEqual(palette['neutral-50'], [250, 250, 250])
+        for family in ['mauve', 'olive', 'mist', 'taupe']:
+            for shade in [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]:
+                self.assertIn(f'{family}-{shade}', palette)
         for color in palette.values():
             self.assertTrue(all(isinstance(c, int) and 0 <= c <= 255 for c in color))
 

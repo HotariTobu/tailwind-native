@@ -4,7 +4,7 @@ Tailwind Native strips native control decoration and provides Tailwind-style uti
 
 ## Semantics
 
-- Tailwind CSS v4.1.18 is the pinned token reference (`tokens/theme.css`). The generators emit matching native colors and numeric scales, with offline reproducibility checks.
+- Tailwind CSS v4.3.3 is the pinned token reference (`tokens/theme.css`). The generators emit matching native colors and numeric scales, with offline reproducibility checks.
 - One spacing unit is four logical Apple points / Android dp. Text sizes use native points / sp. Font-size utilities retain native line metrics; reference Tailwind line heights are also exposed as tokens.
 - Native chain order is significant. SwiftUI wraps views and Compose processes modifiers; neither API is a CSS cascade.
 - Start/end padding follows layout direction; left/right padding and translations use physical directions.

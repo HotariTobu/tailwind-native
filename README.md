@@ -75,7 +75,7 @@ cd jetpackcompose
 mise exec -- ./gradlew testDebugUnitTest assembleRelease
 ```
 
-The palettes are generated offline with `python3 tools/generate_tokens.py` from the pinned [Tailwind v4.1.18 theme](https://github.com/tailwindlabs/tailwindcss/blob/v4.1.18/packages/tailwindcss/theme.css). OKLCH colors are converted to 8-bit sRGB with channel clipping, so wide-gamut browser rendering may differ. See `tokens/LICENSE.tailwind` for the upstream license.
+The palettes are generated offline with `python3 tools/generate_tokens.py` from the pinned [Tailwind v4.3.3 theme](https://github.com/tailwindlabs/tailwindcss/blob/v4.3.3/packages/tailwindcss/theme.css). OKLCH colors are converted to 8-bit sRGB with channel clipping, so wide-gamut browser rendering may differ. See `tokens/LICENSE.tailwind` for the upstream license.
 
 For interaction variants in Compose, pass a shared `MutableInteractionSource` to `TWButton` and use `Modifier.pressed(source)`, `focus(source)`, or `hover(source)` in a composable. Native state drives these styles; the reset button adds no default ripple. `TWPreflight(dark = ...)` can override the system theme for both text defaults and `dark` variants.
 

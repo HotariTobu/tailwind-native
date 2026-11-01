@@ -1,6 +1,6 @@
 # Effects and native rendering
 
-Outer shadow tokens come from Tailwind v4.1.18. Both implementations use every layer's offset, blur, spread and opacity; the first layer is painted last, above later layers. A shadow does not participate in layout or hit testing, and its paint is knocked out inside the original rounded box. Set the shadow radius to match the content's rounded corners.
+Outer shadow tokens come from Tailwind v4.3.3. Both implementations use every layer's offset, blur, spread and opacity; the first layer is painted last, above later layers. A shadow does not participate in layout or hit testing, and its paint is knocked out inside the original rounded box. Set the shadow radius to match the content's rounded corners.
 
 SwiftUI draws the layers in a noninteractive background Canvas. Its Gaussian filter uses half the CSS blur value as sigma. Compose caches software-rendered masks per size/token, supporting the shared effect on the API 31+ baseline without introducing a rendering-library dependency. Android's legacy BlurMaskFilter radius is converted from the target sigma before rendering. Positive spread preserves sharp corners and adjusts small radii using the CSS corner-spread rule. Native antialiasing and Gaussian implementations can vary at edges; this is not a browser pixel renderer.
 

@@ -13,7 +13,7 @@ The dependency baseline follows current stable releases. Older SDKs, compiler pl
 | Android tests | Robolectric 4.17, Espresso 3.7.0, JUnit 4.13.2 |
 | CI actions | checkout 7.0.1, setup-java 6.1.0; immutable commit pins, Node 24 |
 | Linux CI | explicit Ubuntu 26.04 |
-| Token source | vendored Tailwind CSS 4.1.18, generated offline, upstream notice distributed |
+| Token source | vendored Tailwind CSS 4.3.3, generated offline, upstream notice distributed |
 
 ## Decisions and evidence
 
